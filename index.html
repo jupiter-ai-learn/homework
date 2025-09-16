@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>맛집 추천 서비스</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-utensils"></i> 맛집 추천 서비스</h1>
+                <p>AI가 추천하는 당신만을 위한 맛집을 찾아보세요</p>
+                <button class="settings-btn" id="settingsBtn">
+                    <i class="fas fa-cog"></i> API 설정
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="search-section">
+                <div class="search-container">
+                    <div class="input-group">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="예: 강남역 이탈리안, 홍대 카페, 판교 중식당..." />
+                        <button id="searchBtn" class="search-btn">
+                            <span class="btn-text">검색</span>
+                            <div class="loading-spinner"></div>
+                        </button>
+                    </div>
+                    <div class="search-suggestions">
+                        <span class="suggestion-label">인기 검색어:</span>
+                        <button class="suggestion-tag" data-query="강남역 맛집">강남역 맛집</button>
+                        <button class="suggestion-tag" data-query="홍대 카페">홍대 카페</button>
+                        <button class="suggestion-tag" data-query="판교 이탈리안">판교 이탈리안</button>
+                        <button class="suggestion-tag" data-query="명동 한식">명동 한식</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <div class="ai-recommendation" id="aiRecommendation">
+                    <div class="recommendation-header">
+                        <i class="fas fa-robot"></i>
+                        <h3>AI 추천</h3>
+                    </div>
+                    <div class="recommendation-content" id="recommendationContent">
+                        <!-- AI 추천 내용이 여기에 표시됩니다 -->
+                    </div>
+                </div>
+
+                <div class="restaurants-grid" id="restaurantsGrid">
+                    <!-- 레스토랑 카드들이 여기에 표시됩니다 -->
+                </div>
+
+                <div class="pagination" id="pagination" style="display: none;">
+                    <button class="page-btn" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+                    <div class="page-numbers" id="pageNumbers"></div>
+                    <button class="page-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <div class="error-message" id="errorMessage" style="display: none;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p id="errorText"></p>
+            </div>
+
+            <div class="empty-state" id="emptyState">
+                <div class="empty-content">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>맛집을 찾아보세요!</h3>
+                    <p>지역과 음식 종류를 입력하면 AI가 최적의 맛집을 추천해드립니다.</p>
+                    <div class="features">
+                        <div class="feature">
+                            <i class="fas fa-brain"></i>
+                            <span>AI 기반 추천</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-star"></i>
+                            <span>실시간 정보</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-map"></i>
+                            <span>위치 기반 검색</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2025 맛집 추천 서비스. Powered by Kakao Local API & OpenAI GPT</p>
+        </footer>
+    </div>
+
+    <!-- API Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-cog"></i> API 키 설정</h3>
+                <button class="modal-close" id="settingsClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="api-settings">
+                    <div class="setting-group">
+                        <label for="kakaoApiKey">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Kakao Local API 키
+                        </label>
+                        <input type="password" id="kakaoApiKey" placeholder="Kakao API 키를 입력하세요">
+                        <small>
+                            <a href="https://developers.kakao.com/" target="_blank">
+                                <i class="fas fa-external-link-alt"></i> 
+                                Kakao Developers에서 발급받기
+                            </a>
+                        </small>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label for="openaiApiKey">
+                            <i class="fas fa-robot"></i>
+                            OpenAI API 키
+                        </label>
+                        <input type="password" id="openaiApiKey" placeholder="OpenAI API 키를 입력하세요">
+                        <small>
+                            <a href="https://platform.openai.com/api-keys" target="_blank">
+                                <i class="fas fa-external-link-alt"></i> 
+                                OpenAI에서 발급받기
+                            </a>
+                        </small>
+                    </div>
+                    
+                    <div class="api-status" id="apiStatus">
+                        <div class="status-item">
+                            <span class="status-label">Kakao API:</span>
+                            <span class="status-value" id="kakaoStatus">미설정</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">OpenAI API:</span>
+                            <span class="status-value" id="openaiStatus">미설정</span>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button class="modal-btn save-btn" id="saveApiKeys">
+                            <i class="fas fa-save"></i>
+                            저장
+                        </button>
+                        <button class="modal-btn clear-btn" id="clearApiKeys">
+                            <i class="fas fa-trash"></i>
+                            초기화
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Restaurant Detail Modal -->
+    <div class="modal" id="restaurantModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle"></h3>
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Restaurant details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
